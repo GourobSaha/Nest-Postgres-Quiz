@@ -1,9 +1,19 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Options } from './options.entity';
+import { Type } from 'class-transformer';
+import { ArrayMaxSize, ValidateNested } from 'class-validator';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+class Option {
+    @Column()
+    optionNo: number;
 
-@Entity()
+    @Column()
+    optionText: string;
+
+    @Column()
+    isCorrect: boolean;
+}
+
+@Entity('tblQuestion')
 export class Question {
-
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -13,6 +23,9 @@ export class Question {
     @Column()
     marks: number;
 
-    @OneToMany(() => Options, (option) => option.question)
-    options: Options[];
+    @Column('jsonb', { nullable: false, default: [] })
+    @ArrayMaxSize(6) // Set the maximum number of options here
+    @ValidateNested({ each: true })
+    @Type(() => Option)
+    options: Option[];
 }

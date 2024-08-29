@@ -1,7 +1,13 @@
-import { IsString, IsNumber, IsArray, ArrayNotEmpty, IsBoolean } from 'class-validator';
+import { Type } from "class-transformer";
+import { IsInt, Min, IsString, MaxLength, IsBoolean, Max, IsArray, ValidateNested, ArrayMinSize, ArrayMaxSize } from "class-validator";
 
-export class CreateOptionDto {
+class OptionDto {
+    @IsInt()
+    @Min(1)
+    optionNo: number;
+
     @IsString()
+    @MaxLength(200)  // Adjust this value as needed
     optionText: string;
 
     @IsBoolean()
@@ -10,12 +16,18 @@ export class CreateOptionDto {
 
 export class CreateQuestionDto {
     @IsString()
+    @MaxLength(500)  // This should match the length in your entity
     questionText: string;
 
-    @IsNumber()
+    @IsInt()
+    @Min(1)
+    @Max(100)  // Adjust max marks as needed
     marks: number;
 
     @IsArray()
-    @ArrayNotEmpty()
-    options: CreateOptionDto[];
+    @ValidateNested({ each: true })
+    @ArrayMinSize(2)  // Minimum 2 options
+    @ArrayMaxSize(6)  // Maximum 6 options, adjust as needed
+    @Type(() => OptionDto)
+    options: OptionDto[];
 }
