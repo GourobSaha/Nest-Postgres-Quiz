@@ -4,6 +4,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { QuestionModule } from './modules/question/question.module';
 import * as dotenv from 'dotenv';
+import { AuthModule } from './modules/auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 
 dotenv.config();
 
@@ -20,6 +22,8 @@ dotenv.config();
       synchronize: true,
     }),
     QuestionModule,
+    AuthModule,
+    JwtModule,
   ],
   controllers: [AppController],
   providers: [AppService],
